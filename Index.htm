@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escalera de Rigor 2026 - Brand Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f5f7ff',
+                            100: '#ebf0ff',
+                            200: '#d6e0ff',
+                            300: '#adc2ff',
+                            400: '#85a4ff',
+                            500: '#6366f1', // Indigo Principal
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            800: '#3730a3',
+                            900: '#312e81',
+                            950: '#1e1b4b',
+                        },
+                        slate: {
+                            950: '#0f172a', // Pizarra Profundo
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        .dark .glass-effect {
+            background: rgba(15, 23, 42, 0.8);
+        }
+
+        .prompt-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+
+        .dark .prompt-card {
+            border: 1px solid rgba(30, 41, 59, 0.5);
+        }
+
+        .prompt-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
+            border-color: #6366f1;
+        }
+
+        .category-btn {
+            transition: all 0.2s ease;
+        }
+
+        .category-btn.active {
+            background-color: #6366f1;
+            color: white;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .dark ::-webkit-scrollbar-thumb { background: #334155; }
+    </style>
+</head>
+<body class="bg-[#fcfcfd] text-slate-900 dark:bg-slate-950 dark:text-slate-100 antialiased">
+
+    <!-- Navbar Estilo Presentación -->
+    <header class="sticky top-0 z-50 border-b border-slate-200/60 dark:border-slate-800/60 glass-effect">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="flex items-center gap-4">
+                <div class="h-12 w-12 bg-gradient-to-tr from-brand-600 to-indigo-400 rounded-2xl flex items-center justify-center shadow-lg shadow-brand-500/20">
+                    <i class="fas fa-stairs text-white text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">
+                        Escalera de Rigor <span class="text-brand-500">2026</span>
+                    </h1>
+                    <p class="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-[0.2em]">Ecosistema Estratégico PD & MYP</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-3 w-full md:w-auto">
+                <div class="relative flex-grow md:w-80">
+                    <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                    <input type="text" id="prompt-search" placeholder="Asignatura, nivel o ética..." 
+                           class="w-full pl-11 pr-4 py-2.5 rounded-2xl border border-slate-200 bg-white/50 text-sm focus:ring-2 focus:ring-brand-500 focus:border-transparent outline-none transition-all dark:bg-slate-800/50 dark:border-slate-700 dark:text-white">
+                </div>
+                <button onclick="toggleDarkMode()" class="p-2.5 rounded-2xl border border-slate-200 bg-white hover:bg-slate-50 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 transition-all group">
+                    <i id="theme-icon" class="fas fa-moon text-slate-500 group-hover:text-brand-500"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 py-10">
+        
+        <!-- Filtros de Categoría -->
+        <div class="mb-12">
+            <div class="flex flex-wrap gap-2 p-1.5 bg-slate-100/50 dark:bg-slate-900/50 rounded-[2rem] border border-slate-200/50 dark:border-slate-800/50 w-fit">
+                <button onclick="filterGroup('all')" id="btn-all" class="category-btn active px-6 py-2.5 rounded-[1.5rem] text-xs font-bold transition-all">Todos</button>
+                <button onclick="filterGroup('lengua')" id="btn-lengua" class="category-btn px-6 py-2.5 rounded-[1.5rem] text-xs font-bold text-slate-500 hover:text-brand-500 transition-all">Lengua (PD)</button>
+                <button onclick="filterGroup('ciencias')" id="btn-ciencias" class="category-btn px-6 py-2.5 rounded-[1.5rem] text-xs font-bold text-slate-500 hover:text-brand-500 transition-all">Ciencias (PD)</button>
+                <button onclick="filterGroup('mates')" id="btn-mates" class="category-btn px-6 py-2.5 rounded-[1.5rem] text-xs font-bold text-slate-500 hover:text-brand-500 transition-all">Mates (PD)</button>
+                <button onclick="filterGroup('tdc')" id="btn-tdc" class="category-btn px-6 py-2.5 rounded-[1.5rem] text-xs font-bold text-slate-500 hover:text-brand-500 transition-all">TdC</button>
+                <button onclick="filterGroup('mono')" id="btn-mono" class="category-btn px-6 py-2.5 rounded-[1.5rem] text-xs font-bold text-slate-500 hover:text-brand-500 transition-all">Monografía</button>
+                <button onclick="filterGroup('cas')" id="btn-cas" class="category-btn px-6 py-2.5 rounded-[1.5rem] text-xs font-bold text-slate-500 hover:text-brand-500 transition-all">CAS</button>
+                <button onclick="filterGroup('myp')" id="btn-myp" class="category-btn px-6 py-2.5 rounded-[1.5rem] text-xs font-bold text-slate-500 hover:text-brand-500 transition-all">MYP / PAI</button>
+                <button onclick="filterGroup('atl')" id="btn-atl" class="category-btn px-6 py-2.5 rounded-[1.5rem] text-xs font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-900/20 transition-all">ATL & Integridad</button>
+                <button onclick="filterGroup('etica')" id="btn-etica" class="category-btn px-6 py-2.5 rounded-[1.5rem] text-xs font-bold text-rose-600 bg-rose-50 dark:bg-rose-900/20 transition-all">Políticas & Ética</button>
+            </div>
+        </div>
+
+        <!-- Grid de Prompts -->
+        <div id="prompts-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Inyectado vía JS -->
+        </div>
+
+        <!-- Nueva Sección: Protocolo de Integridad Académica 2026 -->
+        <div class="mt-20 bg-slate-900 dark:bg-slate-900/50 rounded-[3rem] p-10 md:p-16 text-white border border-slate-800 shadow-2xl relative overflow-hidden">
+            <div class="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h2 class="text-3xl md:text-4xl font-extrabold mb-6 leading-tight">
+                        Protocolo de <span class="text-indigo-400">Integridad Académica</span> 2026
+                    </h2>
+                    <p class="text-slate-400 text-lg mb-8 leading-relaxed">
+                        El uso de IA en el Programa del Diploma y el PAI debe regirse por la transparencia. Implementa estos acuerdos institucionales para asegurar un entorno de aprendizaje ético.
+                    </p>
+                    <div class="space-y-4">
+                        <div class="flex gap-4 items-start">
+                            <div class="bg-indigo-500/20 p-2 rounded-lg"><i class="fas fa-eye text-indigo-400"></i></div>
+                            <div>
+                                <h4 class="font-bold text-sm">Transparencia Total</h4>
+                                <p class="text-xs text-slate-500 italic">Cada interacción con la IA debe ser documentada en el proceso.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4 items-start">
+                            <div class="bg-indigo-500/20 p-2 rounded-lg"><i class="fas fa-signature text-indigo-400"></i></div>
+                            <div>
+                                <h4 class="font-bold text-sm">Voz del Alumno</h4>
+                                <p class="text-xs text-slate-500 italic">La IA propone, el alumno dispone y edita. No se aceptan "copia y pega".</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="p-6 rounded-3xl bg-white/5 border border-white/10 text-center">
+                        <i class="fas fa-check-double text-emerald-400 text-2xl mb-4"></i>
+                        <h4 class="font-bold text-xs uppercase tracking-widest text-indigo-300">Validado</h4>
+                        <p class="text-[10px] text-slate-400 mt-2">Criterios IB actualizados</p>
+                    </div>
+                    <div class="p-6 rounded-3xl bg-white/5 border border-white/10 text-center">
+                        <i class="fas fa-user-shield text-indigo-400 text-2xl mb-4"></i>
+                        <h4 class="font-bold text-xs uppercase tracking-widest text-indigo-300">Ético</h4>
+                        <p class="text-[10px] text-slate-400 mt-2">Detección de sesgos activa</p>
+                    </div>
+                    <div class="p-6 rounded-3xl bg-white/5 border border-white/10 text-center">
+                        <i class="fas fa-book text-indigo-400 text-2xl mb-4"></i>
+                        <h4 class="font-bold text-xs uppercase tracking-widest text-indigo-300">Anclado</h4>
+                        <p class="text-[10px] text-slate-400 mt-2">Citas de página obligatorias</p>
+                    </div>
+                    <div class="p-6 rounded-3xl bg-white/5 border border-white/10 text-center">
+                        <i class="fas fa-balance-scale text-indigo-400 text-2xl mb-4"></i>
+                        <h4 class="font-bold text-xs uppercase tracking-widest text-indigo-300">Rigor</h4>
+                        <p class="text-[10px] text-slate-400 mt-2">Cero alucinaciones normativas</p>
+                    </div>
+                </div>
+            </div>
+            <div class="absolute -top-20 -right-20 w-80 h-80 bg-indigo-600/10 rounded-full blur-[100px]"></div>
+        </div>
+
+        <!-- Sección Meta-Prompting -->
+        <div class="mt-20 grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+            <div class="bg-white dark:bg-slate-900 rounded-[3rem] p-10 border border-slate-200 dark:border-slate-800 shadow-sm">
+                <h3 class="text-2xl font-extrabold mb-6 flex items-center gap-3 text-slate-900 dark:text-white">
+                    <i class="fas fa-brain text-brand-500"></i> Anatomía de un Prompt Élite
+                </h3>
+                <div class="space-y-4">
+                    <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border-l-4 border-brand-500">
+                        <span class="text-[10px] font-black uppercase text-brand-500 block mb-1">01. Persona (Rol)</span>
+                        <p class="text-xs text-slate-600 dark:text-slate-400 font-medium">"Actúa como un examinador del IB con 15 años de experiencia..."</p>
+                    </div>
+                    <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border-l-4 border-indigo-400">
+                        <span class="text-[10px] font-black uppercase text-indigo-400 block mb-1">02. Contexto & Tarea</span>
+                        <p class="text-xs text-slate-600 dark:text-slate-400 font-medium">"Audita mi borrador de la asignatura de Física basándote en la Guía de 2026..."</p>
+                    </div>
+                    <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border-l-4 border-indigo-300">
+                        <span class="text-[10px] font-black uppercase text-indigo-300 block mb-1">03. Formato & Restricción</span>
+                        <p class="text-xs text-slate-600 dark:text-slate-400 font-medium">"Presenta tus sugerencias en una tabla y cita páginas específicas del manual."</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gradient-to-br from-brand-600 to-indigo-900 rounded-[3rem] p-10 text-white relative overflow-hidden flex flex-col justify-center">
+                <div class="relative z-10 text-center">
+                    <div class="w-20 h-20 bg-white/10 rounded-3xl flex items-center justify-center mx-auto mb-6 backdrop-blur-md border border-white/20">
+                        <i class="fas fa-anchor text-3xl text-indigo-300"></i>
+                    </div>
+                    <h2 class="text-3xl font-extrabold mb-4 italic tracking-tight">Ancla de Rigor</h2>
+                    <p class="text-indigo-100 text-sm mb-8 leading-relaxed px-4">
+                        No permitas alucinaciones normativas. Alimenta NotebookLM con guías oficiales y usa prompts de <strong>Nivel 3</strong> para auditoría real.
+                    </p>
+                    <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="bg-white/10 hover:bg-white/20 px-6 py-2 rounded-full text-xs font-bold transition-all border border-white/10">
+                        <i class="fas fa-arrow-up mr-2"></i> Volver arriba
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Pie de Página Optimizado -->
+    <footer class="mt-32 bg-slate-50 dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 pt-16 pb-12">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16 text-center md:text-left">
+                <!-- Columna 1: Marca -->
+                <div class="flex flex-col items-center md:items-start">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="h-8 w-8 bg-brand-600 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-stairs text-white text-xs"></i>
+                        </div>
+                        <span class="font-extrabold tracking-tight text-slate-900 dark:text-white uppercase text-sm">Escalera de Rigor <span class="text-brand-500">2026</span></span>
+                    </div>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed max-w-xs">
+                        Ecosistema diseñado para transformar la práctica pedagógica mediante el uso ético y avanzado de la inteligencia artificial en contextos IB.
+                    </p>
+                </div>
+
+                <!-- Columna 2: Firma & LinkedIn -->
+                <div class="flex flex-col items-center">
+                    <span class="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-6">Autoría & Redes</span>
+                    <a href="https://www.linkedin.com/in/javiertrigoso/" target="_blank" rel="noopener noreferrer" 
+                       class="group flex flex-col items-center gap-2">
+                        <div class="w-12 h-12 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center shadow-sm group-hover:border-brand-500 transition-all">
+                            <i class="fab fa-linkedin-in text-slate-400 group-hover:text-brand-500"></i>
+                        </div>
+                        <span class="text-sm font-bold text-slate-900 dark:text-white group-hover:text-brand-500 transition-colors underline decoration-brand-500/30 underline-offset-4">Javier Trigoso</span>
+                    </a>
+                </div>
+
+                <!-- Columna 3: Información Legal -->
+                <div class="flex flex-col items-center md:items-end">
+                    <span class="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-4">Información Legal</span>
+                    <div class="flex flex-col items-center md:items-end gap-2">
+                        <p class="text-[10px] text-slate-500 dark:text-slate-400 font-bold">© 2026 Todos los derechos reservados.</p>
+                        <p class="text-[10px] text-slate-400 dark:text-slate-500 text-center md:text-right">Propiedad intelectual diseñada para el éxito en el PD BI & PAI</p>
+                        <span class="bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 text-[9px] px-2 py-1 rounded-md font-bold mt-2">v2.1 Master Edition</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Línea de Advertencia IA -->
+            <div class="border-t border-slate-200 dark:border-slate-800 pt-8">
+                <p class="text-[9px] text-center text-slate-400 dark:text-slate-500 leading-relaxed max-w-2xl mx-auto uppercase tracking-tighter">
+                    <i class="fas fa-exclamation-triangle mr-1 text-amber-500"></i> Aviso de Responsabilidad: Estos prompts son herramientas de apoyo pedagógico. Los resultados generados por la inteligencia artificial deben ser validados siempre por un docente humano calificado basándose en las guías vigentes de la organización del Bachillerato Internacional (IB).
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const promptsData = [
+            // PD: LENGUA Y LITERATURA
+            { group: 'lengua', level: 1, title: 'Exploración Literaria', content: 'Identifica 5 figuras retóricas en este fragmento de La ciudad y los perros y explica su significado literal.' },
+            { group: 'lengua', level: 2, title: 'Andamiaje de Ensayo', content: 'Actúa como docente de la asignatura de Literatura. Ayúdame a diseñar una estructura comparativa para mi Ensayo del NS. Genera 3 posibles tesis que vinculen el contexto de producción con la voz narrativa del autor.' },
+            { group: 'lengua', level: 3, title: 'Auditoría de Examinador', content: 'Actúa como un examinador del IB. Audita este análisis literario generado por IA. Identifica qué matices culturales o estéticos ha ignorado la máquina y genera 3 preguntas socráticas que me obliguen a profundizar en la intención del autor para mi Evaluación Oral Interna.' },
+            
+            // PD: CIENCIAS
+            { group: 'ciencias', level: 1, title: 'Concepto Base', content: 'Explica la segunda ley de la termodinámica usando una analogía del mundo cotidiano.' },
+            { group: 'ciencias', level: 2, title: 'Diseño Experimental', content: 'Actúa como mentor de la asignatura de Física. Ayúdame a diseñar el protocolo de seguridad y la tabla de variables para mi Evaluación Interna sobre la viscosidad de los líquidos.' },
+            { group: 'ciencias', level: 3, title: 'Rigor de Laboratorio', content: 'Actúa como supervisor de laboratorio. Revisa mi procesamiento de datos. No corrijas los errores; en su lugar, señala dónde mi propagación de incertidumbres no coincide con el Subject Report de mayo de 2025 y oblígame a recalcular el error sistemático manualmente.' },
+            
+            // PD: MATES
+            { group: 'mates', level: 1, title: 'Procedimiento Directo', content: 'Resuelve esta integral por partes y muestra cada paso de la sustitución.' },
+            { group: 'mates', level: 2, title: 'Modelización Práctica', content: 'Actúa como profesor de la asignatura de Matemáticas. Genera un problema contextualizado de Prueba 2 sobre modelización de crecimiento poblacional que requiera el uso de logaritmos y funciones exponenciales.' },
+            { group: 'mates', level: 3, title: 'Validación Criterio E', content: 'Actúa como examinador para la Exploración Matemática (IA). El alumno está usando un modelo de regresión generado por IA. Diseña un reto de "validación de modelo" donde el alumno deba demostrar matemáticamente por qué el modelo falla en los valores límite y proponga un ajuste de dominio basado en su propio criterio.' },
+            
+            // PD: TDC
+            { group: 'tdc', level: 1, title: 'Marco Conceptual', content: 'Explica la diferencia entre conocimiento personal y conocimiento compartido con ejemplos sencillos.' },
+            { group: 'tdc', level: 2, title: 'Conexión con SVR', content: 'Actúa como mentor de Teoría del Conocimiento. Ayúdame a encontrar situaciones de la vida real (SVR) potentes para el título prescrito número 3 del ciclo 2026. Genera una Pregunta de Conocimiento (KQ) de segundo orden para cada una.' },
+            { group: 'tdc', level: 3, title: 'Abogado del Diablo', content: 'Actúa como tutor crítico de Teoría del Conocimiento. Toma mi tesis central y actúa como el "abogado del diablo". Genera 3 contraargumentos que utilicen el área de conocimiento de las ciencias humanas para invalidar mi postura inicial.' },
+            
+            // PD: MONOGRAFÍA
+            { group: 'mono', level: 1, title: 'Formato y Normas', content: '¿Cuáles son los requisitos de formato y límite de palabras para la Monografía en la asignatura de [Insertar Asignatura]?' },
+            { group: 'mono', level: 2, title: 'Delimitación de RQ', content: 'Actúa como supervisor de la Monografía. Ayúdame a transformar un tema general sobre [Tema] en una Pregunta de Investigación (RQ) enfocada y delimita el alcance del ensayo para que sea viable en 4000 palabras.' },
+            { group: 'mono', level: 3, title: 'Auditoría Criterio C', content: 'Actúa como examinador del IB. Audita la sección de "Análisis Crítico" de mi borrador de Monografía. Identifica si estoy siendo puramente descriptivo y genera 3 sugerencias para elevar mi argumento al Criterio C (Pensamiento Crítico).' },
+            
+            // PD: CAS
+            { group: 'cas', level: 1, title: 'Ideas de Creatividad', content: 'Dame 5 ideas de experiencias para la sección de "Creatividad" que no requieran presupuesto y se puedan realizar dentro del entorno escolar.' },
+            { group: 'cas', level: 2, title: 'Propuesta de Proyecto', content: 'Actúa como coordinador de CAS. Ayúdame a redactar una propuesta de proyecto que conecte la "Actividad" con un "Servicio" comunitario, asegurando que se cumplan al menos 3 resultados de aprendizaje del IB.' },
+            { group: 'cas', level: 3, title: 'Reflexión Profunda', content: 'Actúa como mentor de CAS. Revisa mi reflexiones actuales sobre el proyecto [Nombre del Proyecto]. Identifica dónde la reflexión es superficial y sugiéreme preguntas que me obliguen a evidenciar un cambio de actitud.' },
+
+            // MYP (PAI) GENERAL
+            { group: 'myp', level: 1, title: 'Conceptos Clave', content: 'Explica el Concepto Clave de "Sistemas" en el contexto de la asignatura de Biología para alumnos de 2º de la ESO utilizando ejemplos visuales.' },
+            { group: 'myp', level: 2, title: 'Andamiaje de Criterios', content: 'Actúa como docente de la asignatura de Lengua y Literatura. Ayúdame a diseñar una tabla de criterios de evaluación (A, B, C y D) para una tarea de escritura creativa sobre el realismo mágico, adaptada al nivel de 4º del PAI.' },
+            { group: 'myp', level: 3, title: 'Rigor Interdisciplinario', content: 'Actúa como coordinador del PAI. Audita este borrador de unidad interdisciplinaria entre Matemáticas y Artes Visuales. Identifica si la Pregunta de Indagación es realmente debatible y sugiere 3 formas de conectar el Contexto Global con el Proyecto Personal.' },
+            
+            // ATL & INTEGRIDAD
+            { group: 'atl', level: 1, title: 'Gestión del Tiempo', content: 'Actúa como un coach de autogestión. Ayúdame a desglosar esta tarea compleja de [Nombre de tarea] en 5 pasos manejables utilizando la técnica Pomodoro para evitar la procrastinación.' },
+            { group: 'atl', level: 2, title: 'Habilidades de Pensamiento', content: 'Actúa como tutor de pensamiento crítico. Lee mi argumento central sobre [Tema]. No me digas si es correcto, en su lugar, identifícame 3 posibles sesgos cognitivos o falacias lógicas que podría estar cometiendo.' },
+            { group: 'atl', level: 3, title: 'Bitácora de IA (Integridad)', content: 'Actúa como mentor de integridad académica. Ayúdame a redactar una "Declaración de Uso de IA" para mi trabajo. Describe el proceso paso a paso de cómo utilicé esta herramienta para [Investigar/Estructurar] y qué partes del resultado final son 100% de mi autoría intelectual.' },
+            
+            // POLÍTICAS & ÉTICA
+            { group: 'etica', level: 1, title: 'Acuerdos de Aula', content: 'Genera una lista de 5 normas básicas de "Etiqueta y Ética en IA" para que mis alumnos las firmen antes de empezar el curso de [Asignatura].' },
+            { group: 'etica', level: 2, title: 'Política Institucional', content: 'Actúa como consultor educativo experto en el IB. Redacta un párrafo para la Política de Integridad Académica del colegio que defina claramente la diferencia entre "Uso Asistido" y "Plagio por IA" en tareas de evaluación interna.' },
+            { group: 'etica', level: 3, title: 'Auditoría de Ética', content: 'Actúa como el Comité de Ética del colegio. Analiza este protocolo de uso de IA propuesto por el departamento de [Nombre de Departamento]. Identifica posibles brechas de seguridad o riesgos de desigualdad de acceso entre alumnos y sugiere 3 correctivos.' }
+        ];
+
+        let currentGroup = 'all';
+        let searchQuery = '';
+
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+            const icon = document.getElementById('theme-icon');
+            icon.classList.toggle('fa-moon');
+            icon.classList.toggle('fa-sun');
+        }
+
+        function getLevelTag(level) {
+            const colors = {
+                1: 'bg-blue-50 text-blue-600 border-blue-200 dark:bg-blue-900/10 dark:text-blue-400 dark:border-blue-800',
+                2: 'bg-amber-50 text-amber-600 border-amber-200 dark:bg-amber-900/10 dark:text-amber-400 dark:border-amber-800',
+                3: 'bg-rose-50 text-rose-600 border-rose-200 dark:bg-rose-900/10 dark:text-rose-400 dark:border-rose-800'
+            };
+            const labels = { 1: 'Exploración', 2: 'Andamiaje', 3: 'Rigor & Mentoría' };
+            return `<span class="px-3 py-1 rounded-full text-[10px] font-bold border ${colors[level]} uppercase tracking-tight">Nivel ${level}: ${labels[level]}</span>`;
+        }
+
+        function createPromptCard(prompt) {
+            return `
+                <div class="prompt-card bg-white dark:bg-slate-900/50 rounded-3xl p-7 flex flex-col group h-full">
+                    <div class="flex justify-between items-start mb-6">
+                        ${getLevelTag(prompt.level)}
+                        <button onclick="copyToClipboard(this)" class="p-2 rounded-xl text-slate-400 hover:text-brand-500 hover:bg-brand-50 dark:hover:bg-brand-900/20 transition-all">
+                            <i class="far fa-copy"></i>
+                        </button>
+                    </div>
+                    <h3 class="font-extrabold text-slate-900 dark:text-white mb-3 text-lg leading-snug">${prompt.title}</h3>
+                    <p class="text-slate-500 dark:text-slate-400 text-sm italic mb-8 flex-grow leading-relaxed">"${prompt.content}"</p>
+                    <div class="flex items-center gap-2 text-[9px] font-black text-slate-300 dark:text-slate-700 uppercase tracking-widest">
+                        <div class="h-1.5 w-1.5 rounded-full bg-brand-500"></div>
+                        ${prompt.group}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderPrompts() {
+            const grid = document.getElementById('prompts-grid');
+            grid.innerHTML = '';
+            
+            const filtered = promptsData.filter(p => {
+                const matchesGroup = currentGroup === 'all' || p.group === currentGroup;
+                const matchesSearch = p.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                                     p.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                                     p.group.toLowerCase().includes(searchQuery.toLowerCase());
+                return matchesGroup && matchesSearch;
+            });
+
+            filtered.forEach(p => grid.innerHTML += createPromptCard(p));
+        }
+
+        function filterGroup(group) {
+            currentGroup = group;
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('active', 'text-white', 'bg-brand-500', 'bg-emerald-600', 'bg-rose-600');
+                btn.classList.add('text-slate-500');
+            });
+            const activeBtn = document.getElementById('btn-' + group);
+            activeBtn.classList.add('active');
+            activeBtn.classList.remove('text-slate-500');
+            renderPrompts();
+        }
+
+        document.getElementById('prompt-search').addEventListener('input', (e) => {
+            searchQuery = e.target.value;
+            renderPrompts();
+        });
+
+        function copyToClipboard(btn) {
+            const text = btn.closest('.prompt-card').querySelector('p').innerText.replace(/^"(.*)"$/, '$1');
+            navigator.clipboard.writeText(text).then(() => {
+                const icon = btn.querySelector('i');
+                icon.className = 'fas fa-check text-brand-500';
+                setTimeout(() => icon.className = 'far fa-copy', 2000);
+            });
+        }
+
+        window.onload = () => renderPrompts();
+    </script>
+</body>
+</html>
